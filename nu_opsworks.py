@@ -7,7 +7,7 @@ import boto3
 
 client = boto3.client('opsworks')
 
-# Create OpsWorks Stack (Don't forget to change: VpcId, ServiceRoleArn, DefaultInstanceProfileArn and DefaultSubnetId)
+# Create OpsWorks Stack (Don't forget to change: VpcId, ServiceRoleArn, DefaultInstanceProfileArn, DefaultSubnetId and DefaultSshKeyName)
 response = client.create_stack(
     Name='Nu Stack',
     Region='us-east-1',
