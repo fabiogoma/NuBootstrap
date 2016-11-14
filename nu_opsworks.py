@@ -3,6 +3,7 @@
 # pylint: disable=C0103
 # pylint: disable=C0301
 # pylint: disable=C0325
+
 import boto3
 
 client = boto3.client('opsworks')
@@ -12,7 +13,7 @@ response = client.create_stack(
     Name='Nu Stack',
     Region='us-east-1',
     VpcId='vpc-ee20898a',
-    ServiceRoleArn='arn:aws:iam::837404746161:role/aws-opsworks-ec2-role',
+    ServiceRoleArn='arn:aws:iam::837404746161:role/aws-opsworks-service-role',
     DefaultInstanceProfileArn='arn:aws:iam::837404746161:instance-profile/aws-opsworks-ec2-role',
     DefaultOs='Amazon Linux 2016.09',
     DefaultSubnetId='subnet-13695f38',
