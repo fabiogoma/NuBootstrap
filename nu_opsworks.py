@@ -11,12 +11,12 @@ client = boto3.client('opsworks')
 # Create OpsWorks Stack (Don't forget to change: VpcId, ServiceRoleArn, DefaultInstanceProfileArn, DefaultSubnetId and DefaultSshKeyName)
 response = client.create_stack(
     Name='Nu Stack',
-    Region='us-east-1',
-    VpcId='vpc-ee20898a',
-    ServiceRoleArn='arn:aws:iam::837404746161:role/aws-opsworks-service-role',
-    DefaultInstanceProfileArn='arn:aws:iam::837404746161:instance-profile/aws-opsworks-ec2-role',
+    Region='us-west-2',
+    VpcId='vpc-7a659f1d',
+    ServiceRoleArn='arn:aws:iam::678982507510:role/aws-opsworks-service-role',
+    DefaultInstanceProfileArn='arn:aws:iam::678982507510:instance-profile/aws-opsworks-ec2-role',
     DefaultOs='Amazon Linux 2016.09',
-    DefaultSubnetId='subnet-13695f38',
+    DefaultSubnetId='subnet-1e8eb768',
     ConfigurationManager={
         'Name': 'Chef',
         'Version': '12'
@@ -28,7 +28,7 @@ response = client.create_stack(
         'Url': 'https://github.com/fabiogoma/NuRecipes.git',
         'Revision': 'master'
     },
-    DefaultSshKeyName='string',
+    DefaultSshKeyName='fabiom',
     DefaultRootDeviceType='ebs'
 )
 stack_id = response['StackId']
@@ -42,7 +42,7 @@ response = client.create_layer(
     Name='Nu Layer',
     Shortname='nu',
     CustomSecurityGroupIds=[
-        'sg-3a47f047',
+        'sg-a5b3e7dc',
     ],
     AutoAssignPublicIps=True,
     CustomRecipes={

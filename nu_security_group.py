@@ -12,7 +12,7 @@ client = boto3.client('ec2')
 response = client.create_security_group(
     GroupName='nu-default-sg',
     Description='Nu Security Group',
-    VpcId='vpc-ee20898a'
+    VpcId='vpc-7a659f1d'
 )
 group_id = response['GroupId']
 
