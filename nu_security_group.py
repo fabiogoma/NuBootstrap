@@ -16,6 +16,11 @@ response = client.create_security_group(
 )
 group_id = response['GroupId']
 
+properties = open('ec2-security.properties', 'w')
+properties.write('[IDs]\n')
+properties.write('security_group_id=' + group_id + '\n')
+properties.close()
+
 # Allowing traffic on port 22
 response = client.authorize_security_group_ingress(
     GroupId=group_id,
@@ -32,6 +37,6 @@ response = client.authorize_security_group_ingress(
     FromPort=80,
     ToPort=80,
     CidrIp='0.0.0.0/0',
-)   
+)
 
-print(group_id)
+print('Security Group ID: ' + group_id)
