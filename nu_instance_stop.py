@@ -9,6 +9,6 @@ import boto3
 client = boto3.client('opsworks')
 
 response = client.stop_instance(
-    InstanceId='f1afa8c7-99a9-4a6b-9767-80bc1ae150ab'
+    InstanceId='eb8138be-9aed-4102-9e74-6088051d076d'
 )
 
