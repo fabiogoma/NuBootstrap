@@ -18,11 +18,18 @@ response = client.create_queue(
 )
 destroy_queue_url = response['QueueUrl']
 
+response = client.create_queue(
+    QueueName='sqs_update'
+)
+update_queue_url = response['QueueUrl']
+
 properties = open('sqs.properties', 'w')
 properties.write('[IDs]\n')
 properties.write('launch_queue_url=' + launch_queue_url + '\n')
 properties.write('destroy_queue_url=' + destroy_queue_url + '\n')
+properties.write('update_queue_url=' + update_queue_url + '\n')
 properties.close()
 
 print('Launch Queue URL: ' + launch_queue_url)
 print('Destroy Queue URL: ' + destroy_queue_url)
+print('Update Queue URL: ' + update_queue_url)
