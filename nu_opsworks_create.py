@@ -48,7 +48,8 @@ response = client.create_layer(
     AutoAssignPublicIps=True,
     CustomRecipes={
         'Deploy': [
-            'aws_worker::docker_install',
+            'nucookbook::docker_install',
+            'nucookbook::docker_provisioner',
         ],
     }
 )
