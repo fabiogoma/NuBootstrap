@@ -26,7 +26,7 @@ response = client.create_stack(
     UseOpsworksSecurityGroups=False,
     CustomCookbooksSource={
         'Type': 'git',
-        'Url': 'https://github.com/fabiogoma/NuRecipes.git',
+        'Url': 'https://github.com/fabiogoma/NuCookbooks.git',
         'Revision': 'master'
     },
     DefaultSshKeyName='fabiom',
