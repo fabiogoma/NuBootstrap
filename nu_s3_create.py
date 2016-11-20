@@ -10,6 +10,7 @@ import botocore
 try:
     client = boto3.client('s3')
     response = client.create_bucket(
+        ACL='public-read',
         Bucket='nustorage',
         CreateBucketConfiguration={
             'LocationConstraint': 'us-west-2'
@@ -22,3 +23,11 @@ except botocore.exceptions.ClientError as e:
 
 s3 = boto3.resource('s3')
 s3.Bucket('nustorage').upload_file('/home/fabiom/vms/aws/bootstrap/nubootstrap.yml.gz', 'nubootstrap.yml.gz')
+print("File 'nubootstrap.yml.gz' uploaded")
+
+response = client.put_object_acl(
+    ACL='public-read',
+    Bucket='nustorage',
+    Key='nubootstrap.yml.gz',
+)
+print("Making access allowed")
