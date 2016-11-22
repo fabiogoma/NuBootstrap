@@ -22,9 +22,17 @@ $ python nu_iam_delete.py
 
 ### Schedule a new spot instance
 ```
-curl -H "Content-Type: application/json" -X POST -d @/home/fabiom/vms/aws/helpers/schedule.json   
+curl -H "Content-Type: application/json" -X POST -d @/home/fabiom/vms/aws/helpers/schedule.json http://INSTANCE-IP/schedule/
 ```
 ### List spot instance requests
 ```
-curl http://35.164.34.142/list/ | jq
+curl http://INSTANCE-IP/list/ | jq
+```
+### Check the status from one specific schedule
+```
+curl http://INSTANCE-IP/status/RANDOM-ID | jq
+```
+### Terminate the one specific schedule
+```
+curl http://INSTANCE-IP/callback/RANDOM-ID | jq
 ```
