@@ -7,17 +7,52 @@
 import time
 import boto3
 
-client = boto3.client('opsworks')
+client_opsworks = boto3.client('opsworks')
+client_ec2 = boto3.client('ec2')
+client_iam = boto3.client('iam')
+
+response_ec2 = client_ec2.describe_vpcs()
+vpc_id = response_ec2['Vpcs'][0]['VpcId']
+
+response_ec2 = client_ec2.describe_subnets(
+    Filters=[
+        {
+            'Name': 'vpc-id',
+            'Values': [
+                vpc_id,
+            ]
+        },
+    ]
+)
+subnet_id = response_ec2['Subnets'][0]['SubnetId']
+
+response_ec2 = client_ec2.describe_security_groups(
+    GroupNames=[
+        'nu-default-sg',
+    ]
+)
+security_group_id = response_ec2['SecurityGroups'][0]['GroupId']
+
+
+response_iam = client_iam.get_role(
+    RoleName='aws-opsworks-service-role'
+)
+service_role_arn = response_iam['Role']['Arn']
+
+response_iam = client_iam.get_instance_profile(
+    InstanceProfileName='aws-opsworks-ec2-role'
+)
+default_instance_profile_arn = response_iam['InstanceProfile']['Arn']
 
 # Create OpsWorks Stack (Don't forget to change: VpcId, ServiceRoleArn, DefaultInstanceProfileArn, DefaultSubnetId and DefaultSshKeyName)
-response = client.create_stack(
+response_opsworks = client_opsworks.create_stack(
     Name='Nu Stack',
     Region='us-west-2',
-    VpcId='vpc-7a659f1d',
-    ServiceRoleArn='arn:aws:iam::678982507510:role/aws-opsworks-service-role',
-    DefaultInstanceProfileArn='arn:aws:iam::678982507510:instance-profile/aws-opsworks-ec2-role',
+    VpcId=vpc_id,
+    ServiceRoleArn=service_role_arn,
+    DefaultInstanceProfileArn=default_instance_profile_arn,
     DefaultOs='Amazon Linux 2016.09',
-    DefaultSubnetId='subnet-1e8eb768',
+    DefaultSubnetId=subnet_id,
     ConfigurationManager={
         'Name': 'Chef',
         'Version': '12'
@@ -32,18 +67,18 @@ response = client.create_stack(
     DefaultSshKeyName='fabiom',
     DefaultRootDeviceType='ebs'
 )
-stack_id = response['StackId']
+stack_id = response_opsworks['StackId']
 print('Stack ID: ' + stack_id)
 
 # Create OpsWorks Layer (Don't forget to check the security id)
 # Example: aws ec2 describe-security-groups --filters 'Name=group-name,Values=nu-default-sg'
-response = client.create_layer(
+response_opsworks = client_opsworks.create_layer(
     StackId=stack_id,
     Type='custom',
     Name='Nu Layer',
     Shortname='nu',
     CustomSecurityGroupIds=[
-        'sg-a5b3e7dc',
+        security_group_id,
     ],
     AutoAssignPublicIps=True,
     CustomRecipes={
@@ -53,11 +88,11 @@ response = client.create_layer(
         ],
     }
 )
-layer_id = response['LayerId']
+layer_id = response_opsworks['LayerId']
 print('Layer ID: ' + layer_id)
 
 # Create OpsWorks Instance
-response = client.create_instance(
+response_opsworks = client_opsworks.create_instance(
     StackId=stack_id,
     LayerIds=[
         layer_id,
@@ -67,11 +102,11 @@ response = client.create_instance(
     Architecture='x86_64',
     RootDeviceType='ebs'
 )
-instance_id = response['InstanceId']
+instance_id = response_opsworks['InstanceId']
 print('Instance ID: ' + instance_id)
 
 # Start OpsWorks instance_id
-response = client.start_instance(
+response_opsworks = client_opsworks.start_instance(
     InstanceId=instance_id
 )
 print('Instance requested to start')
@@ -84,15 +119,15 @@ properties.write('layer_id=' + layer_id + '\n')
 properties.write('instance_id=' + instance_id + '\n')
 
 while True:
-    response = client.describe_instances(
+    response_opsworks = client_opsworks.describe_instances(
         InstanceIds=[
             instance_id
         ]
     )
-    status = response['Instances'][0]['Status']
+    status = response_opsworks['Instances'][0]['Status']
 
     if status == 'online':
-        public_ip = response['Instances'][0]['PublicIp']
+        public_ip = response_opsworks['Instances'][0]['PublicIp']
         properties.write('public_ip=' + public_ip + '\n')
         properties.close()
         print('Public IP: ' + public_ip)
