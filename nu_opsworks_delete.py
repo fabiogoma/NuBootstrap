@@ -18,10 +18,14 @@ instance_id = config.get('IDs', 'instance_id')
 layer_id = config.get('IDs', 'layer_id')
 stack_id = config.get('IDs', 'stack_id')
 
-response = client.stop_instance(
-    InstanceId=instance_id
-)
-print('Instance stop requested')
+try:
+    response = client.stop_instance(
+        InstanceId=instance_id
+    )
+    print('Instance stop requested')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        print('Instance not found')
 
 while True:
     try:
@@ -30,16 +34,26 @@ while True:
         )
         print('Instance deleted')
         break
-    except botocore.exceptions.ClientError:
-        # Instance still running. Try again in 10 sec
-        time.sleep(10)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == 'ResourceNotFoundException':
+            break
+        else:
+            time.sleep(10)
 
-response = client.delete_layer(
-    LayerId=layer_id
-)
-print('Layer deleted')
+try:
+    response = client.delete_layer(
+        LayerId=layer_id
+    )
+    print('Layer deleted')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        print('Layer not found')
 
-response = client.delete_stack(
-    StackId=stack_id
-)
-print('Stack deleted')
+try:
+    response = client.delete_stack(
+        StackId=stack_id
+    )
+    print('Stack deleted')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        print('Stack not found')
