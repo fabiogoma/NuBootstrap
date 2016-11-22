@@ -5,31 +5,51 @@
 # pylint: disable=C0325
 
 import boto3
+import botocore
 
 client = boto3.client('sqs')
 
-response = client.create_queue(
-    QueueName='sqs_launch'
-)
-launch_queue_url = response['QueueUrl']
+# Delete Launch Queue
+try:
+    response = client.get_queue_url(
+        QueueName='sqs_launch',
+    )
+    launch_queue_url = response['QueueUrl']
 
-response = client.create_queue(
-    QueueName='sqs_destroy'
-)
-destroy_queue_url = response['QueueUrl']
+    response = client.delete_queue(
+        QueueUrl=launch_queue_url
+    )
+    print(launch_queue_url + ' deleted')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'AWS.SimpleQueueService.NonExistentQueue':
+        print('Non existent queue')
 
-response = client.create_queue(
-    QueueName='sqs_update'
-)
-update_queue_url = response['QueueUrl']
+# Delete Destroy Queue
+try:
+    response = client.get_queue_url(
+        QueueName='sqs_destroy',
+    )
+    destroy_queue_url = response['QueueUrl']
 
-properties = open('sqs.properties', 'w')
-properties.write('[IDs]\n')
-properties.write('launch_queue_url=' + launch_queue_url + '\n')
-properties.write('destroy_queue_url=' + destroy_queue_url + '\n')
-properties.write('update_queue_url=' + update_queue_url + '\n')
-properties.close()
+    response = client.delete_queue(
+        QueueUrl=destroy_queue_url
+    )
+    print(destroy_queue_url + ' deleted')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'AWS.SimpleQueueService.NonExistentQueue':
+        print('Non existent queue')
 
-print('Launch Queue URL: ' + launch_queue_url)
-print('Destroy Queue URL: ' + destroy_queue_url)
-print('Update Queue URL: ' + update_queue_url)
+# Delete Update Queue
+try:
+    response = client.get_queue_url(
+        QueueName='sqs_update',
+    )
+    update_queue_url = response['QueueUrl']
+
+    response = client.delete_queue(
+        QueueUrl=update_queue_url
+    )
+    print(update_queue_url + ' deleted')
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == 'AWS.SimpleQueueService.NonExistentQueue':
+        print('Non existent queue')
