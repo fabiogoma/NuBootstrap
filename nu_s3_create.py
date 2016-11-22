@@ -30,4 +30,4 @@ response = client.put_object_acl(
     Bucket='nustorage',
     Key='nubootstrap.yml.gz',
 )
-print("Making access allowed")
+print("Allowing access")
