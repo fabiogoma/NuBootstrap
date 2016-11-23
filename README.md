@@ -4,9 +4,9 @@
 ```shellscript
 $ cd /home/fabiom/vms/aws/bootstrap
 $ python nu_iam_create.py
-$ python nu_s3_create.py
 $ python nu_sqs_create.py
 $ python nu_ec2_sg_create.py
+$ python nu_s3_create.py
 $ python nu_opsworks_create.py
 ```
 
@@ -14,9 +14,9 @@ $ python nu_opsworks_create.py
 ```shellscript
 $ cd /home/fabiom/vms/aws/bootstrap
 $ python nu_opsworks_delete.py
+$ python nu_s3_delete.py
 $ python nu_ec2_sg_delete.py
 $ python nu_sqs_delete.py
-$ python nu_s3_delete.py
 $ python nu_iam_delete.py
 ```
 
