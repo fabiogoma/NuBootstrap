@@ -1,5 +1,7 @@
 # NuProvisionerServer
 
+##All needed python scripts to build a environment from scratch (Using AWS SDK for Python)
+
 ### Sequence usage to build the API server from scratch:
 ```shellscript
 $ cd /home/fabiom/vms/aws/bootstrap
